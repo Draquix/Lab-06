@@ -36,6 +36,9 @@ app.get('/location', (req,res) => {
     const newLocation = new Location(searchedForCity, dataObjectFromJson.display_name, dataObjectFromJson.lat, dataObjectFromJson.lon);
 
     res.send(newLocation);
+    
+}).catch(error => {
+    res.status(500).send('location query failed')
 });
 
 app.get('/weather', (req,res) => {
@@ -44,6 +47,8 @@ app.get('/weather', (req,res) => {
 
     const newWeather = new Weather (dataObjectFromJson.weather.description,dataObjectFromJson.valid_date);
     res.send(newWeather);
+}).catch(error => {
+    res.status(500).send('weather query failed')
 });
 
 
