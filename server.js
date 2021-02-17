@@ -29,14 +29,19 @@ function Weather(weather,valid_date) {
 }
 
 app.get('/location', (req,res) => {
-    const dataArrayForLocationJson = require('./data/location.json');
-    const dataObjectFromJson = dataArrayForLocationJson[0];
-
+    // const dataArrayForLocationJson = require('./data/location.json');
+    // const dataObjectFromJson = dataArrayForLocationJson[0];
+    const apiKey = process.env.GEOCODE_API_KEY;
     const searchedForCity = req.query.city;
+   
+    const url = `https://us1.locationiq.com/v1/search.php?key=${GEOCODE_API_KEY}&q=${searchedForCity}&format=json`
+    //const newLocation = new Location(searchedForCity, dataObjectFromJson.display_name, dataObjectFromJson.lat, dataObjectFromJson.lon);
 
-    const newLocation = new Location(searchedForCity, dataObjectFromJson.display_name, dataObjectFromJson.lat, dataObjectFromJson.lon);
-
-    res.send(newLocation);
+    superagent.get(url).then(dataReturned => {
+        const lat = dataReturned.query.lat;
+        const lon = req.query.lon;
+    })
+    res.send(`City searched for: ${searchedForCity} - latitude: ${lat}, longitude: ${lon}`);
     
 })
 // .catch(error => {
@@ -51,9 +56,10 @@ app.get('/weather', (req,res) => {
     const lon = req.query.longitude;
     const url = `https://api.weatherbit.io/v2.0/current?${lat}&${lon}&key=${apiKey}`
 
-    superagent.get(url).then( () => { 
-        const forecast = dataReturned.data.weather.description;
-        const time = dataReturned.data.datetime;
+    superagent.get(url).then( dataReturned => { 
+        const superagentDataArray = dataReturned.map();
+        const forecast = superagentDataArray[0].data.weather.description;
+        const time = superagentDataArray[0].data.datetime;
         res.send(forecast, time);
     });
     //const newWeather = new Weather (dataObjectFromJson.weather.description,dataObjectFromJson.valid_date);
