@@ -37,9 +37,10 @@ app.get('/location', (req,res) => {
 
     res.send(newLocation);
     
-}).catch(error => {
-    res.status(500).send('location query failed')
-});
+})
+// .catch(error => {
+//     res.status(500).send('location query failed');
+// });
 
 app.get('/weather', (req,res) => {
     const dataArrayForWeatherJson = require('./data/weather.json');
@@ -47,9 +48,10 @@ app.get('/weather', (req,res) => {
 
     const newWeather = new Weather (dataObjectFromJson.weather.description,dataObjectFromJson.valid_date);
     res.send(newWeather);
-}).catch(error => {
-    res.status(500).send('weather query failed')
-});
+})
+// .catch(error => {
+//     res.status(500).send('weather query failed');
+// });
 
 
 app.use('*', (request, response) => response.send('Sorry, that is an invalid request'));
