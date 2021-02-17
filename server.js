@@ -6,6 +6,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const { response } = require('express');
+const superagent = require('superagent');
 
 const PORT = process.env.PORT || 3000;
 
@@ -43,11 +44,21 @@ app.get('/location', (req,res) => {
 // });
 
 app.get('/weather', (req,res) => {
-    const dataArrayForWeatherJson = require('./data/weather.json');
-    const dataObjectFromJson = dataArrayForWeatherJson.data[0];
+    //const dataArrayForWeatherJson = require('./data/weather.json');
+    //const dataObjectFromJson = dataArrayForWeatherJson.data[0];
+    const apiKey = process.env.APIKEY_WEATHER;
+    const lat = req.query.latitude;
+    const lon = req.query.longitude;
+    const url = `https://api.weatherbit.io/v2.0/current?${lat}&${lon}&key=${apiKey}`
 
-    const newWeather = new Weather (dataObjectFromJson.weather.description,dataObjectFromJson.valid_date);
-    res.send(newWeather);
+    superagent.get(url).then( () => { 
+        const forecast = dataReturned.data.weather.description;
+        const time = dataReturned.data.datetime;
+        res.send(forecast, time);
+    });
+    //const newWeather = new Weather (dataObjectFromJson.weather.description,dataObjectFromJson.valid_date);
+    
+    //res.send(newWeather);
 })
 // .catch(error => {
 //     res.status(500).send('weather query failed');
